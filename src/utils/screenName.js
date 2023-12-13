@@ -22,6 +22,7 @@ const searchStack = {
 const accountStack = {
   tab: "AccountTab",
   accounts: "Account",
+  login: "Login",
 };
 
 export const screen = {
