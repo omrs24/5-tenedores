@@ -3,6 +3,7 @@ import { View } from "react-native";
 import { Avatar, Text } from "@rneui/base";
 import * as ImagePicker from "expo-image-picker";
 import { getAuth } from "firebase/auth";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { styles } from "./InfoUser.styles";
 
 export function InfoUser() {
@@ -15,11 +16,21 @@ export function InfoUser() {
       aspect: [4, 3],
     });
 
-    if (!result.canceled) uploadImage(result.uri);
+    console.log("Iniciando conversion a blob...");
+    if (!result.canceled) await uploadImage(result.assets[0].uri);
   };
 
-  const uploadImage = (uri) => {
+  const uploadImage = async (uri) => {
     console.log(uri);
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    const storage = getStorage();
+    const storageRef = ref(storage, `avatar/${uid}`);
+    console.log("Iniciando carga...");
+    uploadBytes(storageRef, blob).then((snapshot) => {
+      console.log(snapshot.metadata);
+    });
   };
 
   return (

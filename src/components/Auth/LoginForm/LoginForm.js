@@ -24,6 +24,7 @@ export function LoginForm() {
       try {
         console.log(formValue);
         const auth = getAuth();
+        console.log(auth);
         await signInWithEmailAndPassword(
           auth,
           formValue.email,
