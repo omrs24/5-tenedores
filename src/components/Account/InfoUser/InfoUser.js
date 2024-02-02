@@ -6,7 +6,8 @@ import { getAuth } from "firebase/auth";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { styles } from "./InfoUser.styles";
 
-export function InfoUser() {
+export function InfoUser(props) {
+  const { setLoading, setLoadingText } = props;
   const { uid, photoUrl, displayName, email } = getAuth().currentUser;
 
   const changeAvatar = async () => {
@@ -16,21 +17,30 @@ export function InfoUser() {
       aspect: [4, 3],
     });
 
-    console.log("Iniciando conversion a blob...");
-    if (!result.canceled) await uploadImage(result.assets[0].uri);
+    //console.log("Iniciando conversion a blob...");
+    //console.log(result);
+    if (!result.canceled) uploadImage(result.assets[0].uri);
   };
 
   const uploadImage = async (uri) => {
-    console.log(uri);
+    setLoadingText("Subiendo imagen de perfil");
+    setLoading(true);
+    //console.log(uri);
     const response = await fetch(uri);
     const blob = await response.blob();
 
     const storage = getStorage();
     const storageRef = ref(storage, `avatar/${uid}`);
-    console.log("Iniciando carga...");
+    //console.log("Iniciando carga...");
     uploadBytes(storageRef, blob).then((snapshot) => {
-      console.log(snapshot.metadata);
+      updatePhotoUrl(snapshot.metadata.fullPath);
+      console.log(snapshot);
     });
+  };
+
+  const updatePhotoUrl = (imagePath) => {
+    console.log(imagePath);
+    setLoading(false);
   };
 
   return (
