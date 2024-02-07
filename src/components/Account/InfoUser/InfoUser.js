@@ -1,14 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { Avatar, Text } from "@rneui/base";
 import * as ImagePicker from "expo-image-picker";
-import { getAuth } from "firebase/auth";
-import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { getAuth, updateProfile } from "firebase/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { styles } from "./InfoUser.styles";
 
 export function InfoUser(props) {
   const { setLoading, setLoadingText } = props;
-  const { uid, photoUrl, displayName, email } = getAuth().currentUser;
+  const { uid, photoURL, displayName, email } = getAuth().currentUser;
+  const [avatar, setAvatar] = useState(photoURL);
+  //const [iconVisible, setIconVisible] = useState(true);
+  //if (avatar != null) setIconVisible(false);
 
   const changeAvatar = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -23,7 +26,7 @@ export function InfoUser(props) {
   };
 
   const uploadImage = async (uri) => {
-    setLoadingText("Subiendo imagen de perfil");
+    setLoadingText("Actualizando foto..");
     setLoading(true);
     //console.log(uri);
     const response = await fetch(uri);
@@ -34,12 +37,23 @@ export function InfoUser(props) {
     //console.log("Iniciando carga...");
     uploadBytes(storageRef, blob).then((snapshot) => {
       updatePhotoUrl(snapshot.metadata.fullPath);
-      console.log(snapshot);
+      //console.log(snapshot);
     });
   };
 
-  const updatePhotoUrl = (imagePath) => {
-    console.log(imagePath);
+  const updatePhotoUrl = async (imagePath) => {
+    //console.log(imagePath);
+
+    const storage = getStorage();
+    const imageRef = ref(storage, imagePath);
+    const imageUrl = await getDownloadURL(imageRef);
+
+    const auth = getAuth();
+    updateProfile(auth.currentUser, { photoURL: imageUrl });
+
+    //setIconVisible(false);
+    setAvatar(imageUrl);
+
     setLoading(false);
   };
 
@@ -49,8 +63,9 @@ export function InfoUser(props) {
         size="large"
         rounded
         containerStyle={styles.avatar}
+        iconStyle={{ display: "none" }}
         icon={{ type: "material", name: "person" }}
-        source={{ uri: photoUrl }}
+        source={{ uri: avatar }}
       >
         <Avatar.Accessory size={24} onPress={changeAvatar} />
       </Avatar>
