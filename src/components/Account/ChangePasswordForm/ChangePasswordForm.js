@@ -1,35 +1,22 @@
 import React, { useState } from "react";
 import { View } from "react-native";
 import { Input, Button } from "@rneui/base";
+import { styles } from "./ChangePasswordForm.styles";
 import { useFormik } from "formik";
 import {
   getAuth,
-  updateEmail,
-  signOut,
+  updatePassword,
   EmailAuthProvider,
   EmailAuthCredential,
   reauthenticateWithCredential,
-  verifyBeforeUpdateEmail,
 } from "firebase/auth";
-import { styles } from "./ChangeEmailForm.styles";
-import { initialValues, validationSchema } from "./ChangeEmailForm.data";
+import { initialValues, validationSchema } from "./ChangePasswordForm.data";
 import Toast from "react-native-toast-message";
 
-export function ChangeEmailForm(props) {
-  const { onClose, onReload } = props;
+export function ChangePasswordForm(props) {
   const [showPassword, setShowPassword] = useState(false);
-  const auth = getAuth();
-
+  const { onClose } = props;
   const onShowPassword = () => setShowPassword((prevState) => !prevState);
-
-  async function firebaseEmailReset(user, email) {
-    try {
-      await verifyBeforeUpdateEmail(user, email);
-      signOut(auth);
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   const formik = useFormik({
     initialValues: initialValues(),
@@ -40,27 +27,21 @@ export function ChangeEmailForm(props) {
         const currentUser = getAuth().currentUser;
 
         const credentials = EmailAuthProvider.credential(
-          currentUser.email,
-          formValue.password
+          currentUser.emaill,
+          formValue.oldPassword
         );
-        //await firebaseEmailReset(currentUser, formValue.email);
-        await reauthenticateWithCredential(currentUser, credentials);
 
-        /*Toast.show({
-          type: "info",
-          position: "top",
-          text1: "Verificar correo elecronico",
-        });*/
-        await updateEmail(currentUser, formValue.email);
+        reauthenticateWithCredential(currentUser, credentials);
 
-        onReload();
+        await updatePassword(currentUser, formValue.newPassword);
+
         onClose();
       } catch (error) {
         console.log(error);
         Toast.show({
           type: "error",
           position: "bottom",
-          text1: "Error al cambiar el email",
+          text1: "Error al cambiar la contraseña",
         });
       }
     },
@@ -69,13 +50,7 @@ export function ChangeEmailForm(props) {
   return (
     <View style={styles.content}>
       <Input
-        placeholder="Nuevo email"
-        containerStyle={styles.input}
-        onChangeText={(text) => formik.setFieldValue("email", text)}
-        errorMessage={formik.errors.email}
-      />
-      <Input
-        placeholder="Contraseña"
+        placeholder="Contraseña actual"
         containerStyle={styles.input}
         secureTextEntry={!showPassword}
         rightIcon={{
@@ -84,11 +59,37 @@ export function ChangeEmailForm(props) {
           color: "#c2c2c2",
           onPress: onShowPassword,
         }}
-        onChangeText={(text) => formik.setFieldValue("password", text)}
-        errorMessage={formik.errors.password}
+        onChangeText={(text) => formik.setFieldValue("oldPassword", text)}
+        errorMessage={formik.errors.oldPassword}
+      />
+      <Input
+        placeholder="Contraseña actual"
+        containerStyle={styles.input}
+        secureTextEntry={!showPassword}
+        rightIcon={{
+          type: "material-community",
+          name: showPassword ? "eye-off-outline" : "eye-outline",
+          color: "#c2c2c2",
+          onPress: onShowPassword,
+        }}
+        onChangeText={(text) => formik.setFieldValue("newPassword", text)}
+        errorMessage={formik.errors.newPassword}
+      />
+      <Input
+        placeholder="Contraseña actual"
+        containerStyle={styles.input}
+        secureTextEntry={!showPassword}
+        rightIcon={{
+          type: "material-community",
+          name: showPassword ? "eye-off-outline" : "eye-outline",
+          color: "#c2c2c2",
+          onPress: onShowPassword,
+        }}
+        onChangeText={(text) => formik.setFieldValue("repeatNewPassword", text)}
+        errorMessage={formik.errors.repeatNewPassword}
       />
       <Button
-        title="Cambiar Email"
+        title="Cambiar contraseña"
         containerStyle={styles.btnContainer}
         buttonStyle={styles.btn}
         onPress={formik.handleSubmit}

@@ -5,6 +5,8 @@ import { map } from "lodash";
 import { Modal } from "../Shared";
 import { ChangeDisplayNameForm } from "./ChangeDisplayNameForm/";
 import { ChangeEmailForm } from "./ChangeEmailForm";
+import { ChangePasswordForm } from "./ChangePasswordForm";
+
 export function AccountOptions(props) {
   const { onReload } = props;
   const [showModal, setShowModal] = useState(false);
@@ -25,14 +27,14 @@ export function AccountOptions(props) {
     }
 
     if (key === "password") {
-      setRenderComponent(<Text>Cambiar password</Text>);
+      setRenderComponent(<ChangePasswordForm onClose={onCloseOpenModal} />);
     }
 
     onCloseOpenModal();
   };
 
   const menuOptions = getMenuOptions(selectedComponent);
-
+  console.log(menuOptions);
   return (
     <View>
       {map(menuOptions, (menu, index) => (
@@ -72,8 +74,8 @@ function getMenuOptions(selectedComponent) {
     },
     {
       title: "Cambiar Email",
-      iconType: "material-community",
-      iconNameLeft: "account-circle-outline",
+      iconType: "material",
+      iconNameLeft: "alternate-mail",
       iconColorLeft: "#ccc",
       iconNameRight: "chevron-right",
       iconColorRight: "#ccc",
