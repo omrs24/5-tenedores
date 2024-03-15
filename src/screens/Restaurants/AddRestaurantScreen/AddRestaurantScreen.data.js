@@ -7,6 +7,7 @@ export function initialValues() {
     description: "",
     phone: "",
     email: "",
+    location: null,
   };
 }
 
@@ -19,5 +20,6 @@ export function validationSchema() {
       .email("Ingrese un email valido")
       .required("Campo requerido"),
     description: Yup.string().required("Campo requerido"),
+    location: Yup.object().required("La localizacion es requerida"),
   });
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View } from "react-native";
 import { Input } from "@rneui/base";
 import { MapForm } from "../MapForm";
@@ -7,6 +7,7 @@ import { styles } from "./InfoForm.styles";
 export function InfoForm(props) {
   const { formik } = props;
   const [showMap, setShowMap] = useState(false);
+  const [mapColor, setMapColor] = useState("#c2c2c2");
 
   const toggleMap = () => setShowMap((prevState) => !prevState);
 
@@ -20,7 +21,7 @@ export function InfoForm(props) {
           rightIcon={{
             type: "material-community",
             name: "map-marker-radius",
-            color: "#c2c2c2",
+            color: mapColor,
             onPress: toggleMap,
           }}
         />
@@ -47,7 +48,7 @@ export function InfoForm(props) {
           errorMessage={formik.errors.description}
         />
       </View>
-      <MapForm show={showMap} close={toggleMap} />
+      <MapForm show={showMap} close={toggleMap} formik={formik} />
     </>
   );
 }
