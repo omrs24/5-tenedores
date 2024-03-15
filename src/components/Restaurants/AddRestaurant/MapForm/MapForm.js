@@ -17,7 +17,7 @@ export function MapForm(props) {
   });
 
   useEffect(() => {
-    async () => {
+    (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
       console.log(status);
       if (status !== "granted") {
@@ -31,13 +31,8 @@ export function MapForm(props) {
 
       const locationTemp = await Location.getCurrentPositionAsync({});
       console.log(locationTemp);
-      setLocation({
-        latitude: locationTemp.coords.latitude,
-        longitude: locationTemp.coords.longitude,
-        latitudeDelta: 0.001,
-        longitudeDelta: 0.001,
-      });
-    };
+      setLocation(location);
+    })();
   }, []);
 
   return (
