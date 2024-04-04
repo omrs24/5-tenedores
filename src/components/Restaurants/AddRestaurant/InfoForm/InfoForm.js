@@ -7,7 +7,6 @@ import { styles } from "./InfoForm.styles";
 export function InfoForm(props) {
   const { formik } = props;
   const [showMap, setShowMap] = useState(false);
-  const [mapColor, setMapColor] = useState("#c2c2c2");
 
   const toggleMap = () => setShowMap((prevState) => !prevState);
 
@@ -18,15 +17,15 @@ export function InfoForm(props) {
           placeholder="Nombre del restaurante"
           onChangeText={(text) => formik.setFieldValue("name", text)}
           errorMessage={formik.errors.name}
-          rightIcon={{
-            type: "material-community",
-            name: "map-marker-radius",
-            color: mapColor,
-            onPress: toggleMap,
-          }}
         />
         <Input
           placeholder="Direccion"
+          rightIcon={{
+            type: "material-community",
+            name: "map-marker-radius",
+            color: getColorIconMap(formik),
+            onPress: toggleMap,
+          }}
           onChangeText={(text) => formik.setFieldValue("address", text)}
           errorMessage={formik.errors.address}
         />
@@ -52,3 +51,11 @@ export function InfoForm(props) {
     </>
   );
 }
+
+const getColorIconMap = (formik) => {
+  if (formik.errors.location) return "#ff0000";
+
+  if (formik.values.location) return "#00a680";
+
+  return "#c2c2c2";
+};
