@@ -1,13 +1,16 @@
-import React from "react";
-import { View, Alert } from "react-native";
+import React, { useState } from "react";
+import { Alert, ScrollView } from "react-native";
 import { Icon, Avatar, Text } from "@rneui/base";
 import * as ImagePicker from "expo-image-picker";
 import { styles } from "./UploadImagesForm.styles";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { v4 as uuid } from "uuid";
+import { map } from "lodash";
+import { LoadingModal } from "../../../Shared";
 
 export function UploadImagesForm(props) {
   const { formik } = props;
+  const [isLoading, setIsLoading] = useState(false);
 
   const openGallery = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -17,7 +20,10 @@ export function UploadImagesForm(props) {
       quality: 1,
     });
 
-    if (!result.cancelled) uploadImage(result.assets[0].uri);
+    if (!result.cancelled) {
+      setIsLoading(true);
+      uploadImage(result.assets[0].uri);
+    }
   };
 
   const uploadImage = async (uri) => {
@@ -28,13 +34,26 @@ export function UploadImagesForm(props) {
     const storageRef = ref(storage, `restaurants/${uuid()}`);
 
     uploadBytes(storageRef, blob).then((snapshot) => {
-      //updatePhotoUrl(snapshot.metadata.fullPath);
-      console.log(snapshot);
+      updatePhotosRestaurant(snapshot.metadata.fullPath);
     });
   };
+
+  const updatePhotosRestaurant = async (imagePath) => {
+    const storage = getStorage();
+    const imageRef = ref(storage, imagePath);
+
+    const imageUrl = await getDownloadURL(imageRef);
+    formik.setFieldValue("images", [...formik.values.images, imageUrl]);
+    setIsLoading(false);
+  };
+
   return (
     <>
-      <View style={styles.viewImage}>
+      <ScrollView
+        style={styles.viewImage}
+        horizontal
+        showsHorizontalScrollIndicator={true}
+      >
         <Icon
           type="material-community"
           name="camera"
@@ -42,7 +61,16 @@ export function UploadImagesForm(props) {
           containerStyle={styles.containerIcon}
           onPress={openGallery}
         />
-      </View>
+        {map(formik.values.images, (image) => (
+          <Avatar
+            key={image}
+            source={{ uri: image }}
+            containerStyle={styles.imageStyle}
+          />
+        ))}
+      </ScrollView>
+      <Text style={styles.error}>{formik.errors.images}</Text>
+      <LoadingModal show={isLoading} text="Subiendo Imagen" />
     </>
   );
 }
