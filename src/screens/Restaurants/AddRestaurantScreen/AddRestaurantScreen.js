@@ -2,22 +2,40 @@ import React from "react";
 import { ScrollView, Text } from "react-native";
 import { Button } from "@rneui/base";
 import { Formik, useFormik } from "formik";
+import { v4 as uuid } from "uuid";
+import { doc, setDoc } from "firebase/firestore";
+import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 import {
   InfoForm,
   UploadImagesForm,
   ImageRestaurant,
 } from "../../../components/Restaurants/AddRestaurant";
 
+import { db } from "../../../utils";
 import { initialValues, validationSchema } from "./AddRestaurantScreen.data";
 import { styles } from "./AddRestaurantScreen.styles";
 
 export function AddRestaurantScreen() {
+  const navigation = useNavigation();
+
   const formik = useFormik({
     initialValues: initialValues(),
     validationSchema: validationSchema(),
     validateOnChange: false,
     onSubmit: async (formValue) => {
-      console.log(formValue);
+      try {
+        const newData = formValue;
+
+        newData.id = uuid();
+        newData.createdAt = new Date();
+
+        await setDoc(doc(db, "restaurants", newData.id), newData);
+
+        navigation.goBack();
+      } catch (error) {
+        console.log(error);
+      }
     },
   });
 

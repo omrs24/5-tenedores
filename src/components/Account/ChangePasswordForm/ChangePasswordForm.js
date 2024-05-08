@@ -63,7 +63,7 @@ export function ChangePasswordForm(props) {
         errorMessage={formik.errors.oldPassword}
       />
       <Input
-        placeholder="Contraseña actual"
+        placeholder="Contraseña Nueva"
         containerStyle={styles.input}
         secureTextEntry={!showPassword}
         rightIcon={{
@@ -76,7 +76,7 @@ export function ChangePasswordForm(props) {
         errorMessage={formik.errors.newPassword}
       />
       <Input
-        placeholder="Contraseña actual"
+        placeholder="Repetir contraseña"
         containerStyle={styles.input}
         secureTextEntry={!showPassword}
         rightIcon={{
