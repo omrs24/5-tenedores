@@ -9,6 +9,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { Carousel, Loading } from "../../../components/Shared";
+import { Header, Info, BtnReviewForm } from "../../../components/Restaurant/";
 import { db } from "../../../utils";
 import { styles } from "./RestaurantScreen.styles";
 
@@ -31,6 +32,9 @@ export function RestaurantScreen(props) {
   return (
     <ScrollView style={styles.content}>
       <Carousel images={restaurant.images} height={250} width={width} />
+      <Header restaurant={restaurant} />
+      <Info restaurant={restaurant} />
+      <BtnReviewForm idRestaurant={restaurant.id} />
     </ScrollView>
   );
 }
