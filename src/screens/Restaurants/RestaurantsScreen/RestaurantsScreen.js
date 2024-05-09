@@ -44,7 +44,10 @@ export function RestaurantsScreen(props) {
   return (
     <View style={styles.content}>
       {!restaurants ? (
-        <LoadingModal show text="Cargando" />
+        <View>
+          <LoadingModal show text="Cargando" />
+          <Text>Sin informacion</Text>
+        </View>
       ) : (
         <ListRestaurants restaurants={restaurants} />
       )}

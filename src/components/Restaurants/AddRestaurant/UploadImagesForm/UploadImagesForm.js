@@ -48,7 +48,6 @@ export function UploadImagesForm(props) {
   };
 
   const removeImage = (img) => {
-    console.log(img);
     Alert.alert(
       "Eliminar Imagen",
       "¿Estás seguro de eliminar la imagen?",

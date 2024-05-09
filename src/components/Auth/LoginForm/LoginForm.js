@@ -22,9 +22,9 @@ export function LoginForm() {
     validateOnChange: false,
     onSubmit: async (formValue) => {
       try {
-        console.log(formValue);
+        //console.log(formValue);
         const auth = getAuth();
-        console.log(auth);
+        //console.log(auth);
         await signInWithEmailAndPassword(
           auth,
           formValue.email,

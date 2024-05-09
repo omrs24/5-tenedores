@@ -34,7 +34,7 @@ export function AccountOptions(props) {
   };
 
   const menuOptions = getMenuOptions(selectedComponent);
-  console.log(menuOptions);
+  //console.log(menuOptions);
   return (
     <View>
       {map(menuOptions, (menu, index) => (

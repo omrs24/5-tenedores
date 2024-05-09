@@ -36,7 +36,7 @@ export function RegisterForm() {
           position: "top",
           text1: "Error al registrarse, intentelo mas tarde",
         });
-        console.log(error);
+        //console.log(error);
       }
     },
   });
