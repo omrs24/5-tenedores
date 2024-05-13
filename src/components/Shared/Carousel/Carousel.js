@@ -5,6 +5,7 @@ import CarouselSnap, { Pagination } from "react-native-snap-carousel";
 import { size } from "lodash";
 import { styles } from "./Carousel.styles";
 
+// Buscar reemplazo por error en ViewPropTypes
 export function Carousel(props) {
   const { images, height, width, hideDots } = props;
   const [activeDotIndex, setActiveDotIndex] = useState(0);

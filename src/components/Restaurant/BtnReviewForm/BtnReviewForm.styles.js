@@ -25,4 +25,7 @@ export const styles = StyleSheet.create({
     color: "#00a680",
     fontWeight: "bold",
   },
+  textSendReview: {
+    textAlign: "center",
+  },
 });

@@ -4,6 +4,7 @@ import { Text, Image } from "@rneui/base";
 import { styles } from "./ListRestaurants.styles";
 import { screen } from "../../../utils";
 import { useNavigation } from "@react-navigation/native";
+import { BtnFavorite } from "../../Restaurant/BtnFavorite";
 
 export function ListRestaurants(props) {
   const { restaurants } = props;
@@ -33,6 +34,8 @@ export function ListRestaurants(props) {
                 <Text style={styles.info}>{restaurant.address}</Text>
                 <Text style={styles.info}>{restaurant.description}</Text>
               </View>
+
+              {/* <BtnFavorite idRestaurant={restaurant.id} /> */}
             </View>
           </TouchableOpacity>
         );

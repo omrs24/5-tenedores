@@ -14,7 +14,8 @@ export function Header(props) {
         <AirbnbRating
           size={20}
           count={5}
-          defaultRating={4}
+          isDisabled={true}
+          defaultRating={restaurant.ratingMedia ?? 0}
           showRating={false}
         />
       </View>
