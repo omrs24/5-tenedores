@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, ScrollView } from "react-native";
+import { Text, View, ScrollView, Button } from "react-native";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import {
   doc,
@@ -22,7 +22,9 @@ export function FavoritesScreen() {
   const auth = getAuth();
   const [hasLogged, setHasLogged] = useState(null);
   const [restaurants, setRestaurants] = useState(null);
-  // console.log(restaurants);
+  const [isReload, setIsReaload] = useState(undefined);
+
+  const onReload = () => setIsReaload((prevState) => !prevState);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setHasLogged(user ? true : false);
@@ -46,14 +48,11 @@ export function FavoritesScreen() {
         const newData = docSnap.data();
         newData.idFavorite = data.id;
 
-        //console.log(newData);
-
         restaurantArray.push(newData);
       }
-      // console.log(restaurantArray);
       setRestaurants(restaurantArray);
     });
-  }, []);
+  }, [isReload]);
 
   if (!hasLogged) return <UserNotLogged />;
 
@@ -63,13 +62,8 @@ export function FavoritesScreen() {
 
   return (
     <ScrollView>
-      {map(restaurants, (restaurant) => {
-        try {
-          <RestaurantFavorite key={restaurant.id} restaurant={restaurant} />;
-        } catch (error) {
-          console.log(error);
-        }
-      })}
+      {/* {map(restaurants, (restaurant) => {})} */}
+      <RestaurantFavorite restaurants={restaurants} />
     </ScrollView>
   );
 }
