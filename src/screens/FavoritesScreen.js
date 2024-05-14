@@ -1,23 +1,75 @@
 import React, { useEffect, useState } from "react";
-import { Text, View } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import { UserNotLogged } from "../components/Favorites/";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
+import { size, map } from "lodash";
+import { db } from "../utils";
+import {
+  UserNotLogged,
+  NotFoundRestaurants,
+  RestaurantFavorite,
+} from "../components/Favorites/";
+import { Loading } from "../components/Shared";
 
 export function FavoritesScreen() {
   const auth = getAuth();
   const [hasLogged, setHasLogged] = useState(null);
-
+  const [restaurants, setRestaurants] = useState(null);
+  // console.log(restaurants);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setHasLogged(user ? true : false);
     });
   }, []);
 
+  useEffect(() => {
+    const q = query(
+      collection(db, "favorites"),
+      where("idUser", "==", auth.currentUser.uid)
+    );
+
+    onSnapshot(q, async (snapshot) => {
+      let restaurantArray = [];
+
+      for await (const item of snapshot.docs) {
+        const data = item.data();
+        const docRef = doc(db, "restaurants", data.idRestaurant);
+        const docSnap = await getDoc(docRef);
+
+        const newData = docSnap.data();
+        newData.idFavorite = data.id;
+
+        //console.log(newData);
+
+        restaurantArray.push(newData);
+      }
+      // console.log(restaurantArray);
+      setRestaurants(restaurantArray);
+    });
+  }, []);
+
   if (!hasLogged) return <UserNotLogged />;
 
+  if (!restaurants) return <Loading show text="Cargando" />;
+
+  if (size(restaurants) === 0) return <NotFoundRestaurants />;
+
   return (
-    <View>
-      <Text>Favorites Screen</Text>
-    </View>
+    <ScrollView>
+      {map(restaurants, (restaurant) => {
+        try {
+          <RestaurantFavorite key={restaurant.id} restaurant={restaurant} />;
+        } catch (error) {
+          console.log(error);
+        }
+      })}
+    </ScrollView>
   );
 }
