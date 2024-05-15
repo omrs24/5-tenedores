@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text } from "react-native";
+import { ScrollView } from "react-native";
 import {
   collection,
   query,
@@ -7,13 +7,14 @@ import {
   onSnapshot,
   limit,
 } from "firebase/firestore";
+import { RestaurantRanking } from "../components/Restaurants/";
 import { size } from "lodash";
 import { db } from "../utils";
+import { RestaurantFavorite } from "../components/Favorites";
+import { Text } from "@rneui/base";
 
 export function RankingScreen() {
   const [restaurants, setRestaurants] = useState(null);
-
-  console.log(size(restaurants));
 
   useEffect(() => {
     const q = query(
@@ -28,8 +29,8 @@ export function RankingScreen() {
   }, []);
 
   return (
-    <View>
-      <Text>RankingScreen</Text>
-    </View>
+    <ScrollView>
+      <RestaurantRanking restaurants={restaurants} />
+    </ScrollView>
   );
 }

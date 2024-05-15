@@ -22,9 +22,7 @@ export function FavoritesScreen() {
   const auth = getAuth();
   const [hasLogged, setHasLogged] = useState(null);
   const [restaurants, setRestaurants] = useState(null);
-  const [isReload, setIsReaload] = useState(undefined);
 
-  const onReload = () => setIsReaload((prevState) => !prevState);
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setHasLogged(user ? true : false);
@@ -32,9 +30,10 @@ export function FavoritesScreen() {
   }, []);
 
   useEffect(() => {
+    //al no estar logeado lanza error por el uid
     const q = query(
       collection(db, "favorites"),
-      where("idUser", "==", auth.currentUser.uid)
+      where("idUser", "==", !auth.currentUser ? 0 : auth.currentUser.uid)
     );
 
     onSnapshot(q, async (snapshot) => {
@@ -52,7 +51,7 @@ export function FavoritesScreen() {
       }
       setRestaurants(restaurantArray);
     });
-  }, [isReload]);
+  }, [hasLogged]);
 
   if (!hasLogged) return <UserNotLogged />;
 
@@ -62,7 +61,6 @@ export function FavoritesScreen() {
 
   return (
     <ScrollView>
-      {/* {map(restaurants, (restaurant) => {})} */}
       <RestaurantFavorite restaurants={restaurants} />
     </ScrollView>
   );
