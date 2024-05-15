@@ -26,7 +26,7 @@ export function BtnFavorite(props) {
   useEffect(() => {
     (async () => {
       const response = await getFavorites();
-      console.log("Size of response: " + size(response));
+      //console.log("Size of response: " + size(response));
       if (size(response) > 0) setIsFavorite(true);
       else setIsFavorite(false);
     })();

@@ -31,7 +31,6 @@ export function RestaurantFavorite(props) {
     <FlatList
       data={restaurants}
       renderItem={(doc) => {
-        console.log(doc);
         const restaurant = doc.item;
 
         return (

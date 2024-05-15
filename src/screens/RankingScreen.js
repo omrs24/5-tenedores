@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { ScrollView } from "react-native";
+import { View } from "react-native";
 import {
   collection,
   query,
@@ -29,8 +29,8 @@ export function RankingScreen() {
   }, []);
 
   return (
-    <ScrollView>
+    <View>
       <RestaurantRanking restaurants={restaurants} />
-    </ScrollView>
+    </View>
   );
 }
